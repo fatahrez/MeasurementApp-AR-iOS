@@ -29,9 +29,21 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let scene = SCNScene()
         
         addCrossSign()
+        registerGestureRecognizers()
         
         // Set the scene to the view
         sceneView.scene = scene
+    }
+    
+    private func registerGestureRecognizers() {
+        
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapped))
+        self.sceneView.addGestureRecognizer(tapRecognizer)
+        
+    }
+    
+    @objc func tapped(recognizer: UIGestureRecognizer) {
+        
     }
     
     private func addCrossSign() {
