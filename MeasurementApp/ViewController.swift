@@ -12,6 +12,7 @@ import ARKit
 class ViewController: UIViewController, ARSCNViewDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
+    var spheres = [SCNNode]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,11 +70,30 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             
             let sphereNode = SCNNode(geometry: sphere)
             sphereNode.position = SCNVector3(hitResult.worldTransform.columns.3.x,
-                                            hitResult.worldTransform.columns.3.y,
-                                            hitResult.worldTransform.columns.3.z)
+                                             hitResult.worldTransform.columns.3.y,
+                                             hitResult.worldTransform.columns.3.z)
             
             self.sceneView.scene.rootNode.addChildNode(sphereNode)
             
+            self.spheres.append(sphereNode)
+            
+            if self.spheres.count == 2 {
+                
+                // calculate distance
+                let firstPoint = self.spheres.first!
+                let secondPoint = self.spheres.last!
+                
+                let position = SCNVector3Make(secondPoint.position.x - firstPoint.position.x,
+                                              secondPoint.position.y - firstPoint.position.y,
+                                              secondPoint.position.z - firstPoint.position.z)
+                
+                let result = sqrt(position.x * position.x + position.y * position.y + position.z * position.z)
+                
+                print(result)
+                
+                // remove spheres
+                
+            }
             
         }
         
