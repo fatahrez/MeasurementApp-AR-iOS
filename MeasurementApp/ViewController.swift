@@ -44,6 +44,39 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     @objc func tapped(recognizer: UIGestureRecognizer) {
         
+        let sceneView = recognizer.view as! ARSCNView
+        let touchLocation = self.sceneView.center
+        
+        guard let query = sceneView.raycastQuery(from: touchLocation, allowing: .existingPlaneInfinite, alignment: .any)
+        else {
+            return
+        }
+        
+        let hitTestResults = sceneView.session.raycast(query)
+        
+        if !hitTestResults.isEmpty {
+            
+            guard let hitResult = hitTestResults.first else {
+                return
+            }
+            
+            let sphere = SCNSphere(radius: 0.005)
+            
+            let material = SCNMaterial()
+            material.diffuse.contents = UIColor.red
+            
+            sphere.firstMaterial = material
+            
+            let sphereNode = SCNNode(geometry: sphere)
+            sphereNode.position = SCNVector3(hitResult.worldTransform.columns.3.x,
+                                            hitResult.worldTransform.columns.3.y,
+                                            hitResult.worldTransform.columns.3.z)
+            
+            self.sceneView.scene.rootNode.addChildNode(sphereNode)
+            
+            
+        }
+        
     }
     
     private func addCrossSign() {
@@ -62,6 +95,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
+        
+        configuration.planeDetection = .horizontal
 
         // Run the view's session
         sceneView.session.run(configuration)
